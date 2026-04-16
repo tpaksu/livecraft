@@ -7,16 +7,18 @@ import InlineEditor from './InlineEditor';
 import { createPost, deletePost } from '../utils/api';
 
 export default function App() {
-	const autoEdit = window.location.hash === '#livecraft-edit';
+	const autoEdit = window.location.hash === '#wp-livecraft-edit';
 	const [ editMode, setEditMode ] = useState( autoEdit );
 
 	// Restore scroll position after exiting edit mode.
 	useEffect( () => {
-		const savedScroll = sessionStorage.getItem( 'livecraft-scroll' );
+		const savedScroll = window.sessionStorage.getItem(
+			'wp-livecraft-scroll'
+		);
 		if ( savedScroll === null ) {
 			return;
 		}
-		sessionStorage.removeItem( 'livecraft-scroll' );
+		window.sessionStorage.removeItem( 'wp-livecraft-scroll' );
 		window.scrollTo( 0, parseInt( savedScroll, 10 ) );
 	}, [] );
 	const [ saveStatus, setSaveStatus ] = useState( 'idle' );
@@ -32,8 +34,8 @@ export default function App() {
 	const postType = window.wpLivecraft?.postType || 'post';
 	const typeLabel =
 		postType === 'page'
-			? __( 'page', 'livecraft' )
-			: __( 'post', 'livecraft' );
+			? __( 'page', 'wp-livecraft' )
+			: __( 'post', 'wp-livecraft' );
 
 	const handleToggleEditMode = useCallback( () => {
 		setEditMode( true );
@@ -49,27 +51,29 @@ export default function App() {
 	const handlePublish = useCallback( () => {
 		setConfirmAction( {
 			type: 'publish',
-			title: __( 'Publish', 'livecraft' ),
+			title: __( 'Publish', 'wp-livecraft' ),
 			message:
-				__( 'Are you sure you want to publish this ', 'livecraft' ) +
+				__( 'Are you sure you want to publish this', 'wp-livecraft' ) +
+				' ' +
 				typeLabel +
-				__( '? It will be publicly visible.', 'livecraft' ),
-			confirmLabel: __( 'Publish', 'livecraft' ),
+				__( '? It will be publicly visible.', 'wp-livecraft' ),
+			confirmLabel: __( 'Publish', 'wp-livecraft' ),
 		} );
 	}, [ typeLabel ] );
 
 	const handleSaveDraft = useCallback( () => {
 		setConfirmAction( {
 			type: 'draft',
-			title: __( 'Switch to Draft', 'livecraft' ),
+			title: __( 'Switch to Draft', 'wp-livecraft' ),
 			message:
-				__( 'This will unpublish the ', 'livecraft' ) +
+				__( 'This will unpublish the', 'wp-livecraft' ) +
+				' ' +
 				typeLabel +
 				__(
 					'. It will no longer be publicly accessible.',
-					'livecraft'
+					'wp-livecraft'
 				),
-			confirmLabel: __( 'Switch to Draft', 'livecraft' ),
+			confirmLabel: __( 'Switch to Draft', 'wp-livecraft' ),
 		} );
 	}, [ typeLabel ] );
 
@@ -92,22 +96,23 @@ export default function App() {
 			const isPublish = action.type === 'publish';
 			setResultInfo( {
 				title: isPublish
-					? __( 'Published!', 'livecraft' )
-					: __( 'Switched to Draft', 'livecraft' ),
+					? __( 'Published!', 'wp-livecraft' )
+					: __( 'Switched to Draft', 'wp-livecraft' ),
 				message: isPublish
-					? __( 'Your ', 'livecraft' ) +
-						typeLabel +
-						__( ' is now live.', 'livecraft' )
-					: __( 'Your ', 'livecraft' ) +
-						typeLabel +
-						__(
-							' has been switched to draft.',
-							'livecraft'
-						),
+					? __( 'Your', 'wp-livecraft' ) +
+					  ' ' +
+					  typeLabel +
+					  ' ' +
+					  __( 'is now live.', 'wp-livecraft' )
+					: __( 'Your', 'wp-livecraft' ) +
+					  ' ' +
+					  typeLabel +
+					  ' ' +
+					  __( 'has been switched to draft.', 'wp-livecraft' ),
 				link: result.link,
 				linkLabel: isPublish
-					? __( 'View', 'livecraft' ) + ' ' + typeLabel
-					: __( 'Preview', 'livecraft' ) + ' ' + typeLabel,
+					? __( 'View', 'wp-livecraft' ) + ' ' + typeLabel
+					: __( 'Preview', 'wp-livecraft' ) + ' ' + typeLabel,
 			} );
 		}
 	}, [ confirmAction, typeLabel ] );
@@ -122,22 +127,22 @@ export default function App() {
 
 	const handleCopyLink = useCallback( () => {
 		if ( resultInfo?.link ) {
-			navigator.clipboard.writeText( resultInfo.link );
+			window.navigator.clipboard.writeText( resultInfo.link );
 		}
 	}, [ resultInfo ] );
 
 	const [ exitConfirm, setExitConfirm ] = useState( false );
 
 	const doExit = useCallback( () => {
-		if ( window.location.hash === '#livecraft-edit' ) {
+		if ( window.location.hash === '#wp-livecraft-edit' ) {
 			window.history.replaceState(
 				null,
 				'',
 				window.location.pathname + window.location.search
 			);
 		}
-		sessionStorage.setItem(
-			'livecraft-scroll',
+		window.sessionStorage.setItem(
+			'wp-livecraft-scroll',
 			String( window.scrollY )
 		);
 		window.location.reload();
@@ -147,17 +152,17 @@ export default function App() {
 		if ( window.history.length > 1 ) {
 			window.history.back();
 		} else {
-			window.location.href =
-				window.wpLivecraft?.siteUrl || '/';
+			window.location.href = window.wpLivecraft?.siteUrl || '/';
 		}
 	}, [] );
 
 	const handleExit = useCallback( () => {
-		const { postId, postType } = window.wpLivecraft;
+		const { postId: currentPostId, postType: currentPostType } =
+			window.wpLivecraft;
 
 		// New post with no content: delete the draft and go back.
 		if ( autoEdit && editorRef.current?.isEmpty() ) {
-			deletePost( postType, postId ).catch( () => {} );
+			deletePost( currentPostType, currentPostId ).catch( () => {} );
 			doExitBack();
 			return;
 		}
@@ -202,7 +207,7 @@ export default function App() {
 	const handleNewContent = useCallback( async ( type ) => {
 		const result = await createPost( type, '', '', 'draft' );
 		if ( result.link ) {
-			window.location.href = result.link + '#livecraft-edit';
+			window.location.href = result.link + '#wp-livecraft-edit';
 		}
 	}, [] );
 
@@ -237,21 +242,18 @@ export default function App() {
 				<Modal
 					title={ confirmAction.title }
 					onRequestClose={ handleCancelConfirm }
-					className="livecraft-confirm-modal"
+					className="wp-livecraft-confirm-modal"
 					size="small"
 				>
 					<p>{ confirmAction.message }</p>
-					<div className="livecraft-confirm-modal__actions">
+					<div className="wp-livecraft-confirm-modal__actions">
 						<Button
 							variant="tertiary"
 							onClick={ handleCancelConfirm }
 						>
-							{ __( 'Cancel', 'livecraft' ) }
+							{ __( 'Cancel', 'wp-livecraft' ) }
 						</Button>
-						<Button
-							variant="primary"
-							onClick={ handleConfirm }
-						>
+						<Button variant="primary" onClick={ handleConfirm }>
 							{ confirmAction.confirmLabel }
 						</Button>
 					</div>
@@ -262,29 +264,29 @@ export default function App() {
 				<Modal
 					title={ resultInfo.title }
 					onRequestClose={ handleCloseResult }
-					className="livecraft-result-modal"
+					className="wp-livecraft-result-modal"
 					size="small"
 				>
 					<p>{ resultInfo.message }</p>
 					{ resultInfo.link && (
-						<div className="livecraft-result-modal__url">
-							<code className="livecraft-result-modal__link">
+						<div className="wp-livecraft-result-modal__url">
+							<code className="wp-livecraft-result-modal__link">
 								{ resultInfo.link }
 							</code>
 							<Button
 								icon={ copySmall }
-								label={ __( 'Copy URL', 'livecraft' ) }
+								label={ __( 'Copy URL', 'wp-livecraft' ) }
 								onClick={ handleCopyLink }
 								size="small"
 							/>
 						</div>
 					) }
-					<div className="livecraft-result-modal__actions">
+					<div className="wp-livecraft-result-modal__actions">
 						<Button
 							variant="tertiary"
 							onClick={ handleCloseResult }
 						>
-							{ __( 'Done', 'livecraft' ) }
+							{ __( 'Done', 'wp-livecraft' ) }
 						</Button>
 						{ resultInfo.link && (
 							<Button
@@ -303,35 +305,29 @@ export default function App() {
 
 			{ exitConfirm && (
 				<Modal
-					title={ __( 'Unsaved Changes', 'livecraft' ) }
+					title={ __( 'Unsaved Changes', 'wp-livecraft' ) }
 					onRequestClose={ handleExitCancel }
-					className="livecraft-confirm-modal"
+					className="wp-livecraft-confirm-modal"
 					size="small"
 				>
 					<p>
 						{ __(
 							'You have unsaved changes. What would you like to do?',
-							'livecraft'
+							'wp-livecraft'
 						) }
 					</p>
-					<div className="livecraft-confirm-modal__actions">
-						<Button
-							variant="tertiary"
-							onClick={ handleExitCancel }
-						>
-							{ __( 'Cancel', 'livecraft' ) }
+					<div className="wp-livecraft-confirm-modal__actions">
+						<Button variant="tertiary" onClick={ handleExitCancel }>
+							{ __( 'Cancel', 'wp-livecraft' ) }
 						</Button>
 						<Button
 							variant="secondary"
 							onClick={ handleExitDiscard }
 						>
-							{ __( 'Discard', 'livecraft' ) }
+							{ __( 'Discard', 'wp-livecraft' ) }
 						</Button>
-						<Button
-							variant="primary"
-							onClick={ handleExitSave }
-						>
-							{ __( 'Save & Exit', 'livecraft' ) }
+						<Button variant="primary" onClick={ handleExitSave }>
+							{ __( 'Save & Exit', 'wp-livecraft' ) }
 						</Button>
 					</div>
 				</Modal>

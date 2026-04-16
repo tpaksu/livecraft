@@ -1,20 +1,20 @@
 <?php
 /**
- * Livecraft main plugin class.
+ * WP Livecraft main plugin class.
  *
  * Handles asset enqueueing and content area wrapping for inline editing.
  *
- * @package Livecraft
+ * @package WP_Livecraft
  */
 
 defined( 'ABSPATH' ) || exit;
 
 /**
- * Main Livecraft plugin class.
+ * Main WP Livecraft plugin class.
  *
  * Registers hooks for frontend inline editing.
  */
-class Livecraft {
+class WP_Livecraft {
 
 	/**
 	 * Whether the current request should be instrumented.
@@ -27,12 +27,12 @@ class Livecraft {
 	 * Initialize all hooks.
 	 */
 	public static function init() {
-		add_action( 'template_redirect', array( __CLASS__, 'maybe_enable' ) );
-		add_action( 'wp_enqueue_scripts', array( __CLASS__, 'enqueue_assets' ) );
-		add_filter( 'the_title', array( __CLASS__, 'wrap_title' ), 10, 2 );
-		add_filter( 'the_content', array( __CLASS__, 'wrap_content' ), 999 );
-		add_action( 'wp_footer', array( __CLASS__, 'render_mount_point' ) );
-		add_filter( 'body_class', array( __CLASS__, 'add_body_class' ) );
+		add_action( 'template_redirect', array( 'WP_Livecraft', 'maybe_enable' ) );
+		add_action( 'wp_enqueue_scripts', array( 'WP_Livecraft', 'enqueue_assets' ) );
+		add_filter( 'the_title', array( 'WP_Livecraft', 'wrap_title' ), 10, 2 );
+		add_filter( 'the_content', array( 'WP_Livecraft', 'wrap_content' ), 999 );
+		add_action( 'wp_footer', array( 'WP_Livecraft', 'render_mount_point' ) );
+		add_filter( 'body_class', array( 'WP_Livecraft', 'add_body_class' ) );
 	}
 
 	/**
@@ -60,7 +60,7 @@ class Livecraft {
 			return;
 		}
 
-		$asset_file = LIVECRAFT_PLUGIN_DIR . 'build/index.asset.php';
+		$asset_file = WP_LIVECRAFT_PLUGIN_DIR . 'build/index.asset.php';
 		if ( ! file_exists( $asset_file ) ) {
 			return;
 		}
@@ -69,7 +69,7 @@ class Livecraft {
 
 		wp_enqueue_script(
 			'wp-livecraft-editor',
-			LIVECRAFT_PLUGIN_URL . 'build/index.js',
+			WP_LIVECRAFT_PLUGIN_URL . 'build/index.js',
 			$asset['dependencies'],
 			$asset['version'],
 			true
@@ -110,10 +110,10 @@ class Livecraft {
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook.
 		do_action( 'enqueue_block_editor_assets' );
 
-		if ( file_exists( LIVECRAFT_PLUGIN_DIR . 'build/index.css' ) ) {
+		if ( file_exists( WP_LIVECRAFT_PLUGIN_DIR . 'build/index.css' ) ) {
 			wp_enqueue_style(
 				'wp-livecraft-editor',
-				LIVECRAFT_PLUGIN_URL . 'build/index.css',
+				WP_LIVECRAFT_PLUGIN_URL . 'build/index.css',
 				array(),
 				$asset['version']
 			);
@@ -221,7 +221,7 @@ class Livecraft {
 		}
 
 		return sprintf(
-			'<span id="livecraft-title" data-livecraft-post="%d">%s</span>',
+			'<span id="wp-livecraft-title" data-wp-livecraft-post="%d">%s</span>',
 			intval( $post_id ),
 			$title
 		);
@@ -242,7 +242,7 @@ class Livecraft {
 		$post_type = get_post_type();
 
 		return sprintf(
-			'<div id="livecraft-content" data-livecraft-post="%d" data-livecraft-post-type="%s">%s</div>',
+			'<div id="wp-livecraft-content" data-wp-livecraft-post="%d" data-wp-livecraft-post-type="%s">%s</div>',
 			intval( $post_id ),
 			esc_attr( $post_type ),
 			$content
@@ -268,7 +268,7 @@ class Livecraft {
 	 */
 	public static function add_body_class( $classes ) {
 		if ( self::$should_instrument ) {
-			$classes[] = 'livecraft-enabled';
+			$classes[] = 'wp-livecraft-enabled';
 		}
 		return $classes;
 	}

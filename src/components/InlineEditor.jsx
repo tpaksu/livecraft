@@ -24,7 +24,7 @@ const SAVE_DEBOUNCE_MS = 1500;
 function loadEditorStyles() {
 	const urls = window.wpLivecraft?.editorStyles || {};
 	Object.entries( urls ).forEach( ( [ handle, url ] ) => {
-		const id = `livecraft-dynamic-style-${ handle }`;
+		const id = `wp-livecraft-dynamic-style-${ handle }`;
 		if ( ! document.getElementById( id ) ) {
 			const link = document.createElement( 'link' );
 			link.id = id;
@@ -37,7 +37,7 @@ function loadEditorStyles() {
 
 function removeEditorStyles() {
 	document
-		.querySelectorAll( '[id^="livecraft-dynamic-style-"]' )
+		.querySelectorAll( '[id^="wp-livecraft-dynamic-style-"]' )
 		.forEach( ( el ) => el.remove() );
 }
 
@@ -71,9 +71,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 	const reportHistory = useCallback( () => {
 		onHistoryChange( {
 			hasUndo: historyPointerRef.current > 0,
-			hasRedo:
-				historyPointerRef.current <
-				historyRef.current.length - 1,
+			hasRedo: historyPointerRef.current < historyRef.current.length - 1,
 		} );
 	}, [ onHistoryChange ] );
 
@@ -106,10 +104,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 	}, [ onSaveStatus, reportHistory ] );
 
 	const redo = useCallback( () => {
-		if (
-			historyPointerRef.current >=
-			historyRef.current.length - 1
-		) {
+		if ( historyPointerRef.current >= historyRef.current.length - 1 ) {
 			return;
 		}
 		historyPointerRef.current += 1;
@@ -141,8 +136,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 			}
 		}
 		document.addEventListener( 'keydown', handleKeyDown );
-		return () =>
-			document.removeEventListener( 'keydown', handleKeyDown );
+		return () => document.removeEventListener( 'keydown', handleKeyDown );
 	}, [ undo, redo ] );
 
 	const getTitle = useCallback( () => {
@@ -221,11 +215,11 @@ const InlineEditor = forwardRef( function InlineEditor(
 			return true;
 		}
 		// A single empty paragraph is the default state.
-		const blocks = blocksRef.current;
+		const currentBlocks = blocksRef.current;
 		return (
-			blocks.length === 1 &&
-			blocks[ 0 ].name === 'core/paragraph' &&
-			! blocks[ 0 ].attributes?.content
+			currentBlocks.length === 1 &&
+			currentBlocks[ 0 ].name === 'core/paragraph' &&
+			! currentBlocks[ 0 ].attributes?.content
 		);
 	}, [ getTitle ] );
 
@@ -268,7 +262,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 	// On mount: set up title and editor container.
 	useEffect( () => {
-		const contentEl = document.getElementById( 'livecraft-content' );
+		const contentEl = document.getElementById( 'wp-livecraft-content' );
 		if ( ! contentEl ) {
 			setError( 'Content area not found.' );
 			return;
@@ -276,11 +270,11 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 		loadEditorStyles();
 
-		const titleEl = document.getElementById( 'livecraft-title' );
+		const titleEl = document.getElementById( 'wp-livecraft-title' );
 		if ( titleEl ) {
 			titleElRef.current = titleEl;
 			titleEl.contentEditable = 'true';
-			titleEl.classList.add( 'livecraft-editable-title' );
+			titleEl.classList.add( 'wp-livecraft-editable-title' );
 			titleEl.addEventListener( 'input', () => {
 				dirtyRef.current = true;
 				sessionDirtyRef.current = true;
@@ -299,15 +293,15 @@ const InlineEditor = forwardRef( function InlineEditor(
 		// Mark existing children so we can remove them after the
 		// editor is ready, avoiding a flash of empty content.
 		Array.from( contentEl.children ).forEach( ( child ) => {
-			child.setAttribute( 'data-livecraft-original', '' );
+			child.setAttribute( 'data-wp-livecraft-original', '' );
 		} );
 
 		const editorDiv = document.createElement( 'div' );
-		editorDiv.id = 'livecraft-inline-editor';
+		editorDiv.id = 'wp-livecraft-inline-editor';
 		contentEl.appendChild( editorDiv );
 		editorContainerRef.current = editorDiv;
 
-		document.body.classList.add( 'livecraft-editing' );
+		document.body.classList.add( 'wp-livecraft-editing' );
 
 		fetchPost( postType, postId )
 			.then( ( post ) => {
@@ -320,7 +314,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 				// Remove original content now that the editor is ready.
 				contentEl
-					.querySelectorAll( '[data-livecraft-original]' )
+					.querySelectorAll( '[data-wp-livecraft-original]' )
 					.forEach( ( el ) => el.remove() );
 
 				// Restore scroll position after the editor swap.
@@ -331,11 +325,11 @@ const InlineEditor = forwardRef( function InlineEditor(
 			} );
 
 		return () => {
-			document.body.classList.remove( 'livecraft-editing' );
+			document.body.classList.remove( 'wp-livecraft-editing' );
 			if ( titleElRef.current ) {
 				titleElRef.current.contentEditable = 'false';
 				titleElRef.current.classList.remove(
-					'livecraft-editable-title'
+					'wp-livecraft-editable-title'
 				);
 			}
 			removeEditorStyles();
@@ -343,7 +337,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 				clearTimeout( saveTimeoutRef.current );
 			}
 		};
-	}, [ postId, postType, onPostStatusChange ] );
+	}, [ postId, postType, onPostStatusChange, pushHistory ] );
 
 	// Debounced auto-save on persistent changes.
 	const handleChange = useCallback(
@@ -373,7 +367,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 	);
 
 	if ( error ) {
-		return <div className="livecraft-inline-error">{ error }</div>;
+		return <div className="wp-livecraft-inline-error">{ error }</div>;
 	}
 
 	if ( ! ready || ! blocks || ! editorContainerRef.current ) {

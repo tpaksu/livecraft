@@ -1,12 +1,12 @@
 // ============================================================
-// Livecraft - Frontend Inline Block Editing Styles
+// WP Livecraft - Frontend Inline Block Editing Styles
 // ============================================================
 
-$livecraft-success: #00a32a;
-$livecraft-error: #cc1818;
-$livecraft-toolbar-z: 100000;
-$livecraft-panel-z: 99999;
-$livecraft-overlay-z: 99998;
+/* stylelint-disable no-descending-specificity */
+
+$wp-livecraft-success: #00a32a;
+$wp-livecraft-error: #cc1818;
+$wp-livecraft-toolbar-z: 100000;
 
 // ============================================================
 // Toolbar
@@ -14,19 +14,19 @@ $livecraft-overlay-z: 99998;
 
 // Base toolbar: floating bar, bottom-right.
 // Isolated from theme styles so switching themes doesn't break the UI.
-.livecraft-toolbar {
+.wp-livecraft-toolbar {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
-	z-index: $livecraft-toolbar-z;
+	z-index: $wp-livecraft-toolbar-z;
 	display: flex;
-	gap: 6px;
+	gap: 0;
 	align-items: center;
 	background: #fff;
 	border-radius: 4px;
 	padding: 4px 6px;
 	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
-	animation: livecraftSlideUp 0.25s ease;
+	animation: wpLivecraftSlideUp 0.25s ease;
 
 	// Reset inherited theme styles.
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -48,16 +48,19 @@ $livecraft-overlay-z: 99998;
 
 	.components-button {
 		border-radius: 4px;
-		height: 32px;
-		padding: 0 12px;
+		padding: 0 8px 0 7px;
 		font-family: inherit;
 		font-size: 13px;
+		height: 32px;
 		font-weight: 400;
 		line-height: 1.4;
 		letter-spacing: normal;
 		text-transform: none;
 		text-decoration: none;
 		white-space: nowrap;
+		border-width: 0;
+		gap: 4px;
+		cursor: pointer;
 
 		&.is-primary {
 			background: var(--wp-admin-theme-color, #007cba);
@@ -67,18 +70,23 @@ $livecraft-overlay-z: 99998;
 				background: var(--wp-admin-theme-color-darker-10, #006ba1);
 			}
 		}
+
+		&.wp-livecraft-toolbar__exit {
+			width: 16px;
+			padding: 0;
+		}
 	}
 }
 
 // Idle state: exact WP admin bar colors from wp-includes/css/admin-bar.css.
-.livecraft-toolbar--idle {
+.wp-livecraft-toolbar--idle {
 	background: #1d2327;
 	border-radius: 4px;
 	padding: 4px;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 
 	> .components-button,
-	> .livecraft-toolbar__new-dropdown .components-button {
+	> .wp-livecraft-toolbar__new-dropdown .components-button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -120,16 +128,8 @@ $livecraft-overlay-z: 99998;
 	}
 }
 
-// Icon-only buttons (used in both idle and editing toolbars).
-.livecraft-toolbar .components-button {
-	&.livecraft-toolbar__exit {
-		width: 16px;
-		padding: 0;
-	}
-}
-
 // Editing state: exact WP admin bar colors.
-.livecraft-toolbar--editing {
+.wp-livecraft-toolbar--editing {
 	background: #1d2327;
 	padding: 4px;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
@@ -188,7 +188,7 @@ $livecraft-overlay-z: 99998;
 }
 
 // Dropdown menu: exact WP admin bar submenu colors.
-.livecraft-toolbar__new-menu {
+.wp-livecraft-toolbar__new-menu {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 13px;
 	font-weight: 400;
@@ -251,7 +251,7 @@ $livecraft-overlay-z: 99998;
 // Save status indicator
 // ============================================================
 
-.livecraft-save-indicator {
+.wp-livecraft-save-indicator {
 	padding: 6px 14px;
 	border-radius: 0;
 	font-size: 12px;
@@ -262,14 +262,14 @@ $livecraft-overlay-z: 99998;
 	display: flex;
 	align-items: center;
 	gap: 4px;
-	animation: livecraftFadeIn 0.2s ease;
+	animation: wpLivecraftFadeIn 0.2s ease;
 
 	&--saving {
 		color: #a7aaad;
 	}
 
 	&--saved {
-		color: $livecraft-success;
+		color: $wp-livecraft-success;
 	}
 
 	&--unsaved {
@@ -285,7 +285,7 @@ $livecraft-overlay-z: 99998;
 // Inline editor - blends into the content area
 // ============================================================
 
-#livecraft-inline-editor {
+#wp-livecraft-inline-editor {
 	min-height: 200px;
 
 	// Let the block editor inherit theme typography.
@@ -322,7 +322,7 @@ $livecraft-overlay-z: 99998;
 // Editable title
 // ============================================================
 
-.livecraft-editable-title {
+.wp-livecraft-editable-title {
 	outline: none;
 	cursor: text;
 
@@ -333,113 +333,10 @@ $livecraft-overlay-z: 99998;
 	}
 }
 
-.livecraft-inline-error {
+.wp-livecraft-inline-error {
 	padding: 16px;
-	color: $livecraft-error;
+	color: $wp-livecraft-error;
 	text-align: center;
-}
-
-// ============================================================
-// Overlay backdrop (for new content panel)
-// ============================================================
-
-.livecraft-overlay {
-	position: fixed;
-	top: 0;
-	left: 0;
-	width: 100%;
-	height: 100%;
-	z-index: $livecraft-overlay-z;
-	background: rgba(0, 0, 0, 0.25);
-	animation: livecraftFadeIn 0.2s ease;
-
-	&--full {
-		background: rgba(0, 0, 0, 0.5);
-	}
-}
-
-// ============================================================
-// New Content Panel
-// ============================================================
-
-.livecraft-new-panel {
-	position: fixed;
-	top: 50%;
-	left: 50%;
-	transform: translate(-50%, -50%);
-	width: 800px;
-	max-width: 92vw;
-	height: 85vh;
-	z-index: $livecraft-panel-z;
-	background: #fff;
-	border-radius: 8px;
-	box-shadow: 0 8px 40px rgba(0, 0, 0, 0.2);
-	display: flex;
-	flex-direction: column;
-	animation: livecraftScaleIn 0.25s ease;
-
-	&__header {
-		display: flex;
-		align-items: center;
-		justify-content: space-between;
-		padding: 12px 20px;
-		border-bottom: 1px solid #e0e0e0;
-		flex-shrink: 0;
-	}
-
-	&__title {
-		margin: 0;
-		font-size: 16px;
-		font-weight: 600;
-		color: #1e1e1e;
-	}
-
-	&__actions {
-		display: flex;
-		gap: 8px;
-		align-items: center;
-	}
-
-	&__error {
-		padding: 10px 20px;
-		background: #fcecec;
-		color: $livecraft-error;
-		font-size: 13px;
-		border-bottom: 1px solid #f5c6c6;
-	}
-
-	&__title-input {
-		padding: 16px 20px 0;
-		flex-shrink: 0;
-	}
-
-	&__title-field {
-		.components-text-control__input {
-			font-size: 24px;
-			font-weight: 600;
-			border: none;
-			border-bottom: 2px solid #e0e0e0;
-			border-radius: 0;
-			padding: 8px 0;
-
-			&:focus {
-				border-bottom-color: var(--wp-admin-theme-color, #007cba);
-				box-shadow: none;
-			}
-		}
-	}
-
-	&__content {
-		flex: 1;
-		overflow-y: auto;
-		padding: 20px;
-
-		.editor-styles-wrapper {
-			font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
-			font-size: 16px;
-			line-height: 1.6;
-		}
-	}
 }
 
 // ============================================================
@@ -448,12 +345,12 @@ $livecraft-overlay-z: 99998;
 
 // Match the WordPress admin modal styles exactly.
 // Values taken from computed styles of components-modal in wp-admin.
-.livecraft-confirm-modal,
-.livecraft-result-modal {
-	z-index: $livecraft-toolbar-z + 1 !important;
+.wp-livecraft-confirm-modal,
+.wp-livecraft-result-modal {
+	z-index: $wp-livecraft-toolbar-z + 1 !important;
 
 	&.components-modal__frame {
-		font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+		font-family: -apple-system, system-ui, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 		font-size: 13px;
 		font-weight: 400;
 		line-height: 1.4;
@@ -532,7 +429,8 @@ $livecraft-overlay-z: 99998;
 	}
 }
 
-.livecraft-result-modal {
+.wp-livecraft-result-modal {
+
 	&__url {
 		display: flex;
 		align-items: center;
@@ -556,43 +454,27 @@ $livecraft-overlay-z: 99998;
 // Animations
 // ============================================================
 
-@keyframes livecraftFadeIn {
+@keyframes wpLivecraftFadeIn {
+
 	from {
 		opacity: 0;
 	}
+
 	to {
 		opacity: 1;
 	}
 }
 
-@keyframes livecraftSlideUp {
+@keyframes wpLivecraftSlideUp {
+
 	from {
 		opacity: 0;
 		transform: translateY(12px);
 	}
+
 	to {
 		opacity: 1;
 		transform: translateY(0);
 	}
 }
 
-@keyframes livecraftScaleIn {
-	from {
-		opacity: 0;
-		transform: translate(-50%, -50%) scale(0.95);
-	}
-	to {
-		opacity: 1;
-		transform: translate(-50%, -50%) scale(1);
-	}
-}
-
-// ============================================================
-// Admin bar offset
-// ============================================================
-
-.admin-bar {
-	.livecraft-new-panel {
-		top: calc(50% + 16px);
-	}
-}
