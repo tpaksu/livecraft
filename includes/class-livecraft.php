@@ -80,6 +80,31 @@ class Livecraft {
 		// Load the WordPress media modal so image/media blocks can use the Media Library.
 		wp_enqueue_media();
 
+		// Get block editor settings (theme styles, block categories, etc.)
+		// so the inline editor matches the admin editor's configuration.
+		$editor_settings = self::get_editor_settings();
+
+		// Set block categories on wp-blocks BEFORE any block editor scripts run.
+		// This prevents "invalid category" warnings from plugins like WooCommerce
+		// that register blocks with custom categories.
+		$block_categories = $editor_settings['blockCategories'] ?? array();
+		wp_add_inline_script(
+			'wp-blocks',
+			'wp.blocks.setCategories(' . wp_json_encode( $block_categories ) . ');',
+			'after'
+		);
+
+		// Enqueue only editor scripts for all registered block types.
+		// We skip editor_style_handles here because those stylesheets contain
+		// global rules (font-size, etc.) that override the active theme.
+		// Editor UI styles are loaded dynamically via JS when edit mode activates.
+		$block_registry = WP_Block_Type_Registry::get_instance();
+		foreach ( $block_registry->get_all_registered() as $block_type ) {
+			foreach ( $block_type->editor_script_handles as $handle ) {
+				wp_enqueue_script( $handle );
+			}
+		}
+
 		// Fire enqueue_block_editor_assets so plugin blocks (WooCommerce, etc.)
 		// register their editor scripts on the frontend too.
 		// phpcs:ignore WordPress.NamingConventions.PrefixAllGlobals.NonPrefixedHooknameFound -- WordPress core hook.
@@ -93,6 +118,7 @@ class Livecraft {
 				$asset['version']
 			);
 		}
+
 
 		// Set up wp-api-fetch nonce and root URL on the frontend.
 		wp_add_inline_script(
@@ -116,10 +142,6 @@ class Livecraft {
 		// Collect editor style URLs for dynamic loading when edit mode activates.
 		$editor_style_urls = self::get_editor_style_urls();
 
-		// Get theme editor styles (from theme.json, add_editor_style(), etc.)
-		// so blocks in the inline editor match the theme's appearance.
-		$theme_styles = self::get_theme_editor_styles();
-
 		wp_add_inline_script(
 			'wp-livecraft-editor',
 			'var wpLivecraft = ' . wp_json_encode(
@@ -129,7 +151,7 @@ class Livecraft {
 					'canEdit'      => current_user_can( 'edit_post', get_the_ID() ),
 					'siteUrl'      => home_url(),
 					'editorStyles' => $editor_style_urls,
-					'themeStyles'  => $theme_styles,
+					'themeStyles'  => $editor_settings['styles'] ?? array(),
 				)
 			) . ';',
 			'before'
@@ -164,24 +186,19 @@ class Livecraft {
 	}
 
 	/**
-	 * Get theme editor styles from WordPress block editor settings.
+	 * Get block editor settings for the current post.
 	 *
-	 * Uses get_block_editor_settings() to extract the same styles that the
-	 * admin block editor uses, including theme.json styles, add_editor_style()
-	 * stylesheets, and global styles.
+	 * Returns the full settings array from get_block_editor_settings(),
+	 * which includes theme styles, block categories, and other config
+	 * that the admin block editor uses.
 	 *
-	 * @return array Array of style objects ({ css: string } or { css: string, baseURL: string }).
+	 * @return array Block editor settings.
 	 */
-	private static function get_theme_editor_styles() {
+	private static function get_editor_settings() {
 		$post    = get_post();
 		$context = new WP_Block_Editor_Context( array( 'post' => $post ) );
 
-		$settings = get_block_editor_settings(
-			array(),
-			$context
-		);
-
-		return $settings['styles'] ?? array();
+		return get_block_editor_settings( array(), $context );
 	}
 
 	/**

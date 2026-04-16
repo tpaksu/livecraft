@@ -53,10 +53,32 @@ export async function updatePost( postType, postId, content, title = null ) {
  * @param {string} status   - The post status (draft or publish).
  * @return {Promise<Object>} The created post object.
  */
+/**
+ * Delete a post (move to trash).
+ *
+ * @param {string} postType - The post type.
+ * @param {number} postId   - The post ID.
+ * @return {Promise<Object>} The deleted post object.
+ */
+export async function deletePost( postType, postId ) {
+	return apiFetch( {
+		path: `/wp/v2/${ getRestBase( postType ) }/${ postId }?force=true`,
+		method: 'DELETE',
+	} );
+}
+
 export async function createPost( postType, title, content, status = 'draft' ) {
 	return apiFetch( {
 		path: `/wp/v2/${ getRestBase( postType ) }`,
 		method: 'POST',
-		data: { title, content, status },
+		data: {
+			title: title || '',
+			content: content || '',
+			status,
+			// WordPress rejects posts where title, content, and excerpt
+			// are all empty. Provide a single-space excerpt as a
+			// minimal placeholder so blank drafts can be created.
+			excerpt: ' ',
+		},
 	} );
 }

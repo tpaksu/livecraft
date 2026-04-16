@@ -2,8 +2,6 @@
 // Livecraft - Frontend Inline Block Editing Styles
 // ============================================================
 
-$livecraft-primary: #007cba;
-$livecraft-primary-hover: #0063a1;
 $livecraft-success: #00a32a;
 $livecraft-error: #cc1818;
 $livecraft-toolbar-z: 100000;
@@ -14,7 +12,8 @@ $livecraft-overlay-z: 99998;
 // Toolbar
 // ============================================================
 
-// Base toolbar: pill-shaped bar, bottom center.
+// Base toolbar: floating bar, bottom-right.
+// Isolated from theme styles so switching themes doesn't break the UI.
 .livecraft-toolbar {
 	position: fixed;
 	bottom: 16px;
@@ -24,60 +23,227 @@ $livecraft-overlay-z: 99998;
 	gap: 6px;
 	align-items: center;
 	background: #fff;
-	border-radius: 8px;
+	border-radius: 4px;
 	padding: 4px 6px;
-	box-shadow: 0 2px 12px rgba(0, 0, 0, 0.18), 0 0 0 1px rgba(0, 0, 0, 0.06);
-	animation: livecraftFadeIn 0.2s ease;
+	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
+	animation: livecraftSlideUp 0.25s ease;
+
+	// Reset inherited theme styles.
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+	color: #1e1e1e;
+	text-transform: none;
+	letter-spacing: normal;
+	text-decoration: none;
+	box-sizing: border-box;
+	direction: ltr;
+
+	*,
+	*::before,
+	*::after {
+		box-sizing: border-box;
+	}
 
 	.components-button {
-		border-radius: 6px;
+		border-radius: 4px;
 		height: 32px;
-		padding: 0 14px;
+		padding: 0 12px;
+		font-family: inherit;
 		font-size: 13px;
-		font-weight: 500;
+		font-weight: 400;
+		line-height: 1.4;
+		letter-spacing: normal;
+		text-transform: none;
+		text-decoration: none;
 		white-space: nowrap;
 
 		&.is-primary {
-			background: $livecraft-primary;
+			background: var(--wp-admin-theme-color, #007cba);
 			color: #fff;
 
 			&:hover {
-				background: $livecraft-primary-hover;
+				background: var(--wp-admin-theme-color-darker-10, #006ba1);
 			}
 		}
 	}
+}
 
-	// Edit toggle in idle state.
-	> .livecraft-toolbar__toggle {
+// Idle state: exact WP admin bar colors from wp-includes/css/admin-bar.css.
+.livecraft-toolbar--idle {
+	background: #1d2327;
+	border-radius: 4px;
+	padding: 4px;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+
+	> .components-button,
+	> .livecraft-toolbar__new-dropdown .components-button {
 		display: inline-flex;
 		align-items: center;
-		gap: 6px;
+		justify-content: center;
+		color: #f0f0f1;
+		border-color: transparent;
+		background: transparent;
+		font-size: 13px;
+		font-weight: 400;
+		height: 32px;
+		text-transform: none;
+
+		&:hover,
+		&:focus {
+			color: #72aee6;
+			background: #2c3338;
+		}
+
+		&.is-secondary {
+			color: #f0f0f1;
+			border-color: transparent;
+			box-shadow: none;
+
+			&:hover,
+			&:focus {
+				color: #72aee6;
+				background: #2c3338;
+				box-shadow: none;
+			}
+		}
+
+		svg {
+			fill: rgba(240, 246, 252, 0.6);
+		}
+
+		&:hover svg,
+		&:focus svg {
+			fill: #72aee6;
+		}
 	}
 }
 
-// Editing state: extra styles for action buttons.
+// Icon-only buttons (used in both idle and editing toolbars).
+.livecraft-toolbar .components-button {
+	&.livecraft-toolbar__exit {
+		width: 16px;
+		padding: 0;
+	}
+}
+
+// Editing state: exact WP admin bar colors.
 .livecraft-toolbar--editing {
+	background: #1d2327;
+	padding: 4px;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+
 	.components-button {
-		&.is-tertiary {
-			color: #757575;
+		color: #f0f0f1;
+		border: none !important;
+		background: transparent;
+		box-shadow: none !important;
+		outline: none !important;
+
+		&:hover,
+		&:focus {
+			color: #72aee6;
+			background: #2c3338;
 		}
 
-		// Icon-only buttons.
-		&.livecraft-toolbar__new,
-		&.livecraft-toolbar__exit {
-			width: 32px;
-			padding: 0;
+		&.is-secondary {
+			color: #f0f0f1 !important;
+
+			&:hover,
+			&:focus {
+				color: #72aee6 !important;
+				background: #2c3338 !important;
+			}
+		}
+
+		&.is-primary {
+			background: var(--wp-admin-theme-color, #007cba);
+			color: #fff;
+
+			&:hover {
+				background: var(--wp-admin-theme-color-darker-10, #006ba1);
+			}
+		}
+
+		&.is-tertiary {
+			color: rgba(240, 246, 252, 0.7);
+
+			&:hover,
+			&:focus {
+				color: #72aee6;
+				background: #2c3338;
+			}
+		}
+
+		svg {
+			fill: rgba(240, 246, 252, 0.6);
+		}
+
+		&:hover svg,
+		&:focus svg {
+			fill: #72aee6;
 		}
 	}
 }
 
+// Dropdown menu: exact WP admin bar submenu colors.
 .livecraft-toolbar__new-menu {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+	font-size: 13px;
+	font-weight: 400;
+	line-height: 1.4;
+	text-transform: none;
+	letter-spacing: normal;
+	background: #2c3338 !important;
+	border: none;
+	border-radius: 0 0 4px 4px;
+	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+	color: rgba(240, 246, 252, 0.7);
+
 	.components-menu-group {
-		padding: 4px 0;
+		padding: 6px 0;
 	}
 
 	.components-menu-item__button {
-		min-width: 160px;
+		min-width: 140px;
+		display: flex !important;
+		flex-direction: row-reverse !important;
+		align-items: center;
+		justify-content: flex-end !important;
+		gap: 8px;
+		color: rgba(240, 246, 252, 0.7) !important;
+		background: transparent !important;
+		border: none !important;
+		border-radius: 0 !important;
+		margin: 0;
+		padding: 6px 12px !important;
+		box-shadow: none !important;
+		font-family: inherit;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 2;
+		height: 26px;
+		letter-spacing: normal;
+		text-transform: none;
+		text-decoration: none;
+		outline-offset: unset;
+		outline-width: 0;
+
+		&:hover,
+		&:focus {
+			color: #72aee6 !important;
+			background: transparent !important;
+		}
+
+		svg {
+			fill: rgba(240, 246, 252, 0.6) !important;
+		}
+
+		&:hover svg,
+		&:focus svg {
+			fill: #72aee6 !important;
+		}
 	}
 }
 
@@ -87,19 +253,19 @@ $livecraft-overlay-z: 99998;
 
 .livecraft-save-indicator {
 	padding: 6px 14px;
-	border-radius: 20px;
+	border-radius: 0;
 	font-size: 12px;
 	font-weight: 500;
 	white-space: nowrap;
-	background: #fff;
-	box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
+	background: transparent;
+	box-shadow: none;
 	display: flex;
 	align-items: center;
 	gap: 4px;
 	animation: livecraftFadeIn 0.2s ease;
 
 	&--saving {
-		color: #757575;
+		color: #a7aaad;
 	}
 
 	&--saved {
@@ -107,11 +273,11 @@ $livecraft-overlay-z: 99998;
 	}
 
 	&--unsaved {
-		color: #b26200;
+		color: #dba617;
 	}
 
 	&--error {
-		color: $livecraft-error;
+		color: #e65054;
 	}
 }
 
@@ -130,8 +296,12 @@ $livecraft-overlay-z: 99998;
 		color: inherit;
 	}
 
-	// Hide block selection outlines for a seamless inline feel.
+	// Blocks need position: relative so that absolutely-positioned
+	// resize handles (image corners, etc.) anchor to the block.
 	.block-editor-block-list__block {
+		position: relative;
+
+		// Hide block selection outlines for a seamless inline feel.
 		outline: none !important;
 		box-shadow: none !important;
 
@@ -253,7 +423,7 @@ $livecraft-overlay-z: 99998;
 			padding: 8px 0;
 
 			&:focus {
-				border-bottom-color: $livecraft-primary;
+				border-bottom-color: var(--wp-admin-theme-color, #007cba);
 				box-shadow: none;
 			}
 		}
@@ -273,6 +443,116 @@ $livecraft-overlay-z: 99998;
 }
 
 // ============================================================
+// Confirmation & result modals
+// ============================================================
+
+// Match the WordPress admin modal styles exactly.
+// Values taken from computed styles of components-modal in wp-admin.
+.livecraft-confirm-modal,
+.livecraft-result-modal {
+	z-index: $livecraft-toolbar-z + 1 !important;
+
+	&.components-modal__frame {
+		font-family: -apple-system, "system-ui", "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.4;
+		color: #1e1e1e;
+		text-transform: none;
+		letter-spacing: normal;
+		background: #fff;
+		border: none;
+		border-radius: 8px;
+		outline: none;
+		box-shadow:
+			0 5px 15px rgba(0, 0, 0, 0.08),
+			0 15px 27px rgba(0, 0, 0, 0.07),
+			0 30px 36px rgba(0, 0, 0, 0.04),
+			0 50px 43px rgba(0, 0, 0, 0.02);
+	}
+
+	.components-modal__header {
+		padding: 24px 32px 8px;
+		margin: 0;
+		border: none;
+		background: transparent;
+
+
+	}
+
+	h1.components-modal__header-heading {
+		font-family: inherit;
+		font-size: 19.2px !important;
+		font-weight: 600;
+		line-height: 1;
+		color: #1e1e1e;
+		letter-spacing: normal;
+		text-transform: none;
+		margin: 0;
+		padding: 0;
+
+		&::before {
+			display: none;
+		}
+	}
+
+	.components-modal__content {
+		padding: 4px 32px 32px;
+		font-family: inherit;
+		font-size: 13px;
+		line-height: 1.4;
+	}
+
+	.components-button {
+		font-family: inherit;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.4;
+		letter-spacing: normal;
+		text-transform: none;
+		text-decoration: none;
+	}
+
+	p {
+		font-family: inherit;
+		font-size: 13px;
+		font-weight: 400;
+		line-height: 1.4;
+		color: #1e1e1e;
+		letter-spacing: normal;
+		text-transform: none;
+		margin: 0 0 16px;
+	}
+
+	&__actions {
+		display: flex;
+		justify-content: flex-end;
+		gap: 8px;
+		margin-top: 16px;
+	}
+}
+
+.livecraft-result-modal {
+	&__url {
+		display: flex;
+		align-items: center;
+		gap: 4px;
+		background: #f0f0f0;
+		border-radius: 4px;
+		padding: 4px 4px 4px 12px;
+	}
+
+	&__link {
+		flex: 1;
+		font-size: 13px;
+		word-break: break-all;
+		color: #1e1e1e;
+		background: none;
+		padding: 0;
+	}
+}
+
+// ============================================================
 // Animations
 // ============================================================
 
@@ -282,6 +562,17 @@ $livecraft-overlay-z: 99998;
 	}
 	to {
 		opacity: 1;
+	}
+}
+
+@keyframes livecraftSlideUp {
+	from {
+		opacity: 0;
+		transform: translateY(12px);
+	}
+	to {
+		opacity: 1;
+		transform: translateY(0);
 	}
 }
 

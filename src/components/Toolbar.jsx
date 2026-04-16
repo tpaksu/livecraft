@@ -1,6 +1,15 @@
 import { useState } from '@wordpress/element';
 import { Button, Dropdown, MenuGroup, MenuItem } from '@wordpress/components';
-import { pencil, plus, page, post, cloud, close } from '@wordpress/icons';
+import {
+	pencil,
+	plus,
+	page,
+	post,
+	cloud,
+	close,
+	undo,
+	redo,
+} from '@wordpress/icons';
 import { __ } from '@wordpress/i18n';
 
 function SaveIndicator( { status } ) {
@@ -20,14 +29,64 @@ function SaveIndicator( { status } ) {
 	return <span className={ className }>{ labels[ status ] || '' }</span>;
 }
 
+function NewContentDropdown( { busy, wrapAction, onNewContent } ) {
+	return (
+		<Dropdown
+			className="livecraft-toolbar__new-dropdown"
+			contentClassName="livecraft-toolbar__new-menu"
+			popoverProps={ { placement: 'top-end' } }
+			renderToggle={ ( { isOpen, onToggle } ) => (
+				<Button
+					className="livecraft-toolbar__new"
+					icon={ plus }
+					onClick={ onToggle }
+					aria-expanded={ isOpen }
+					disabled={ busy }
+					variant="secondary"
+				>
+					{ __( 'Create New', 'livecraft' ) }
+				</Button>
+			) }
+			renderContent={ ( { onClose: closeMenu } ) => (
+				<MenuGroup className="livecraft-toolbar__new-menu-group">
+					<MenuItem
+						icon={ post }
+						disabled={ busy }
+						onClick={ () => {
+							closeMenu();
+							wrapAction( () => onNewContent( 'post' ) )();
+						} }
+					>
+						{ __( 'New Post', 'livecraft' ) }
+					</MenuItem>
+					<MenuItem
+						icon={ page }
+						disabled={ busy }
+						onClick={ () => {
+							closeMenu();
+							wrapAction( () => onNewContent( 'page' ) )();
+						} }
+					>
+						{ __( 'New Page', 'livecraft' ) }
+					</MenuItem>
+				</MenuGroup>
+			) }
+		/>
+	);
+}
+
 export default function Toolbar( {
 	editMode,
 	saveStatus,
 	postStatus,
+	hasUndo,
+	hasRedo,
 	onToggleEditMode,
 	onSave,
 	onPublish,
 	onSaveDraft,
+	onUndo,
+	onRedo,
 	onExit,
 	onNewContent,
 } ) {
@@ -42,18 +101,30 @@ export default function Toolbar( {
 		}
 	};
 
-	// Not in edit mode: show the edit button in the same bar style.
+	const postType = window.wpLivecraft?.postType || 'post';
+	const editLabel =
+		postType === 'page'
+			? __( 'Edit Page', 'livecraft' )
+			: __( 'Edit Post', 'livecraft' );
+
+	// Not in edit mode: show edit button and new content dropdown.
 	if ( ! editMode ) {
 		return (
-			<div className="livecraft-toolbar">
+			<div className="livecraft-toolbar livecraft-toolbar--idle">
 				<Button
 					className="livecraft-toolbar__toggle"
 					icon={ pencil }
 					onClick={ onToggleEditMode }
-					variant="link"
+					variant="secondary"
 				>
-					{ __( 'Edit Page', 'livecraft' ) }
+					{ editLabel }
 				</Button>
+
+				<NewContentDropdown
+					busy={ busy }
+					wrapAction={ wrapAction }
+					onNewContent={ onNewContent }
+				/>
 			</div>
 		);
 	}
@@ -63,6 +134,23 @@ export default function Toolbar( {
 	return (
 		<div className="livecraft-toolbar livecraft-toolbar--editing">
 			<SaveIndicator status={ saveStatus } />
+
+			<Button
+				className="livecraft-toolbar__undo"
+				icon={ undo }
+				label={ __( 'Undo', 'livecraft' ) }
+				onClick={ onUndo }
+				disabled={ ! hasUndo }
+				variant="tertiary"
+			/>
+			<Button
+				className="livecraft-toolbar__redo"
+				icon={ redo }
+				label={ __( 'Redo', 'livecraft' ) }
+				onClick={ onRedo }
+				disabled={ ! hasRedo }
+				variant="tertiary"
+			/>
 
 			{ /* Save / Update button */ }
 			<Button
@@ -95,53 +183,11 @@ export default function Toolbar( {
 					className="livecraft-toolbar__draft"
 					onClick={ wrapAction( onSaveDraft ) }
 					disabled={ busy }
-					variant="tertiary"
+					variant="secondary"
 				>
 					{ __( 'Switch to Draft', 'livecraft' ) }
 				</Button>
 			) }
-
-			{ /* New content dropdown */ }
-			<Dropdown
-				className="livecraft-toolbar__new-dropdown"
-				contentClassName="livecraft-toolbar__new-menu"
-				popoverProps={ { placement: 'top-end' } }
-				renderToggle={ ( { isOpen, onToggle } ) => (
-					<Button
-						className="livecraft-toolbar__new"
-						icon={ plus }
-						label={ __( 'Create New', 'livecraft' ) }
-						onClick={ onToggle }
-						aria-expanded={ isOpen }
-						disabled={ busy }
-						variant="secondary"
-					/>
-				) }
-				renderContent={ ( { onClose: closeMenu } ) => (
-					<MenuGroup>
-						<MenuItem
-							icon={ post }
-							disabled={ busy }
-							onClick={ () => {
-								closeMenu();
-								wrapAction( () => onNewContent( 'post' ) )();
-							} }
-						>
-							{ __( 'New Post', 'livecraft' ) }
-						</MenuItem>
-						<MenuItem
-							icon={ page }
-							disabled={ busy }
-							onClick={ () => {
-								closeMenu();
-								wrapAction( () => onNewContent( 'page' ) )();
-							} }
-						>
-							{ __( 'New Page', 'livecraft' ) }
-						</MenuItem>
-					</MenuGroup>
-				) }
-			/>
 
 			{ /* Exit edit mode */ }
 			<Button
