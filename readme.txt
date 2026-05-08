@@ -4,7 +4,7 @@ Tags: editor, frontend editor, block editor, gutenberg, inline editing
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.2
+Stable tag: 0.1.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,8 +70,9 @@ Open an issue at https://github.com/tpaksu/livecraft/issues.
 
 == Changelog ==
 
-= 0.1.2 =
-* Rename plugin from "WP Livecraft" to "Livecraft" (slug, text domain, identifiers) to comply with WordPress.org trademark rules.
+= 0.1.3 =
+* Rename plugin from "WP Livecraft" to "Livecraft" (display name, slug, text domain, PHP class, constants, JS global, DOM IDs, CSS classes, script handle, deep-link hash) to comply with WordPress.org trademark rules.
+* First release submitted to the WordPress.org plugin directory: adds `readme.txt`, plugin icons, and bumps "Tested up to" to 6.9.
 
 = 0.1.1 =
 * Rename internal class to `Livecraft` and convert to instance-based.
@@ -82,5 +83,5 @@ Open an issue at https://github.com/tpaksu/livecraft/issues.
 
 == Upgrade Notice ==
 
-= 0.1.2 =
-Plugin renamed from "WP Livecraft" to "Livecraft". Slug, text domain, and CSS class names changed. Deactivate and reactivate after upgrade.
+= 0.1.3 =
+Plugin renamed from "WP Livecraft" to "Livecraft". The slug, text domain, and CSS class names changed, so any custom CSS or code targeting the old `wp-livecraft-*` selectors needs to be updated to `livecraft-*`. Deactivate and reactivate after upgrading.
