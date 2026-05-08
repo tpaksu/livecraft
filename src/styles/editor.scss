@@ -1,12 +1,12 @@
 // ============================================================
-// WP Livecraft - Frontend Inline Block Editing Styles
+// Livecraft - Frontend Inline Block Editing Styles
 // ============================================================
 
 /* stylelint-disable no-descending-specificity */
 
-$wp-livecraft-success: #00a32a;
-$wp-livecraft-error: #cc1818;
-$wp-livecraft-toolbar-z: 100000;
+$livecraft-success: #00a32a;
+$livecraft-error: #cc1818;
+$livecraft-toolbar-z: 100000;
 
 // ============================================================
 // Toolbar
@@ -14,11 +14,11 @@ $wp-livecraft-toolbar-z: 100000;
 
 // Base toolbar: floating bar, bottom-right.
 // Isolated from theme styles so switching themes doesn't break the UI.
-.wp-livecraft-toolbar {
+.livecraft-toolbar {
 	position: fixed;
 	bottom: 16px;
 	right: 16px;
-	z-index: $wp-livecraft-toolbar-z;
+	z-index: $livecraft-toolbar-z;
 	display: flex;
 	gap: 0;
 	align-items: center;
@@ -26,7 +26,7 @@ $wp-livecraft-toolbar-z: 100000;
 	border-radius: 4px;
 	padding: 4px 6px;
 	box-shadow: 0 1px 6px rgba(0, 0, 0, 0.12), 0 0 0 1px rgba(0, 0, 0, 0.08);
-	animation: wpLivecraftSlideUp 0.25s ease;
+	animation: livecraftSlideUp 0.25s ease;
 
 	// Reset inherited theme styles.
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -71,7 +71,7 @@ $wp-livecraft-toolbar-z: 100000;
 			}
 		}
 
-		&.wp-livecraft-toolbar__exit {
+		&.livecraft-toolbar__exit {
 			width: 16px;
 			padding: 0;
 		}
@@ -79,14 +79,14 @@ $wp-livecraft-toolbar-z: 100000;
 }
 
 // Idle state: exact WP admin bar colors from wp-includes/css/admin-bar.css.
-.wp-livecraft-toolbar--idle {
+.livecraft-toolbar--idle {
 	background: #1d2327;
 	border-radius: 4px;
 	padding: 4px;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 
 	> .components-button,
-	> .wp-livecraft-toolbar__new-dropdown .components-button {
+	> .livecraft-toolbar__new-dropdown .components-button {
 		display: inline-flex;
 		align-items: center;
 		justify-content: center;
@@ -129,7 +129,7 @@ $wp-livecraft-toolbar-z: 100000;
 }
 
 // Editing state: exact WP admin bar colors.
-.wp-livecraft-toolbar--editing {
+.livecraft-toolbar--editing {
 	background: #1d2327;
 	padding: 4px;
 	box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
@@ -188,7 +188,7 @@ $wp-livecraft-toolbar-z: 100000;
 }
 
 // Dropdown menu: exact WP admin bar submenu colors.
-.wp-livecraft-toolbar__new-menu {
+.livecraft-toolbar__new-menu {
 	font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
 	font-size: 13px;
 	font-weight: 400;
@@ -251,7 +251,7 @@ $wp-livecraft-toolbar-z: 100000;
 // Save status indicator
 // ============================================================
 
-.wp-livecraft-save-indicator {
+.livecraft-save-indicator {
 	padding: 6px 14px;
 	border-radius: 0;
 	font-size: 12px;
@@ -262,14 +262,14 @@ $wp-livecraft-toolbar-z: 100000;
 	display: flex;
 	align-items: center;
 	gap: 4px;
-	animation: wpLivecraftFadeIn 0.2s ease;
+	animation: livecraftFadeIn 0.2s ease;
 
 	&--saving {
 		color: #a7aaad;
 	}
 
 	&--saved {
-		color: $wp-livecraft-success;
+		color: $livecraft-success;
 	}
 
 	&--unsaved {
@@ -285,7 +285,7 @@ $wp-livecraft-toolbar-z: 100000;
 // Inline editor - blends into the content area
 // ============================================================
 
-#wp-livecraft-inline-editor {
+#livecraft-inline-editor {
 	min-height: 200px;
 
 	// Let the block editor inherit theme typography.
@@ -322,7 +322,7 @@ $wp-livecraft-toolbar-z: 100000;
 // Editable title
 // ============================================================
 
-.wp-livecraft-editable-title {
+.livecraft-editable-title {
 	outline: none;
 	cursor: text;
 
@@ -333,9 +333,9 @@ $wp-livecraft-toolbar-z: 100000;
 	}
 }
 
-.wp-livecraft-inline-error {
+.livecraft-inline-error {
 	padding: 16px;
-	color: $wp-livecraft-error;
+	color: $livecraft-error;
 	text-align: center;
 }
 
@@ -345,9 +345,9 @@ $wp-livecraft-toolbar-z: 100000;
 
 // Match the WordPress admin modal styles exactly.
 // Values taken from computed styles of components-modal in wp-admin.
-.wp-livecraft-confirm-modal,
-.wp-livecraft-result-modal {
-	z-index: $wp-livecraft-toolbar-z + 1 !important;
+.livecraft-confirm-modal,
+.livecraft-result-modal {
+	z-index: $livecraft-toolbar-z + 1 !important;
 
 	&.components-modal__frame {
 		font-family: -apple-system, system-ui, "Segoe UI", Roboto, Oxygen-Sans, Ubuntu, Cantarell, "Helvetica Neue", sans-serif;
@@ -429,7 +429,7 @@ $wp-livecraft-toolbar-z: 100000;
 	}
 }
 
-.wp-livecraft-result-modal {
+.livecraft-result-modal {
 
 	&__url {
 		display: flex;
@@ -454,7 +454,7 @@ $wp-livecraft-toolbar-z: 100000;
 // Animations
 // ============================================================
 
-@keyframes wpLivecraftFadeIn {
+@keyframes livecraftFadeIn {
 
 	from {
 		opacity: 0;
@@ -465,7 +465,7 @@ $wp-livecraft-toolbar-z: 100000;
 	}
 }
 
-@keyframes wpLivecraftSlideUp {
+@keyframes livecraftSlideUp {
 
 	from {
 		opacity: 0;

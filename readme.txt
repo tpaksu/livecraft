@@ -1,10 +1,10 @@
-=== WP Livecraft ===
+=== Livecraft ===
 Contributors: tpaksu
 Tags: editor, frontend editor, block editor, gutenberg, inline editing
 Requires at least: 6.4
-Tested up to: 6.8
+Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.1
+Stable tag: 0.1.2
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,7 +12,7 @@ Edit WordPress content directly on the frontend. Click any block, edit inline, a
 
 == Description ==
 
-WP Livecraft brings the WordPress block editor to the front of your site. Spot a typo, click the block, fix it, and it saves. No admin trip, no context switch.
+Livecraft brings the WordPress block editor to the front of your site. Spot a typo, click the block, fix it, and it saves. No admin trip, no context switch.
 
 You see your content the way visitors see it, with your theme's typography, colors, and layout already applied. The same blocks and toolbar you know from the admin editor work right on the page.
 
@@ -29,22 +29,22 @@ You see your content the way visitors see it, with your theme's typography, colo
 
 **Source code**
 
-Development happens on GitHub: https://github.com/tpaksu/wp-livecraft
+Development happens on GitHub: https://github.com/tpaksu/livecraft
 
 == Installation ==
 
-1. Upload the plugin to `/wp-content/plugins/wp-livecraft`, or install it through the **Plugins** screen in WordPress.
+1. Upload the plugin to `/wp-content/plugins/livecraft`, or install it through the **Plugins** screen in WordPress.
 2. Activate the plugin through the **Plugins** screen.
 3. Visit any post or page on your site while logged in as a user who can edit it. A toolbar appears at the bottom right.
 4. Click **Edit Post** (or **Edit Page**) and start editing.
 
-You can also jump straight into edit mode by appending `#wp-livecraft-edit` to any post URL.
+You can also jump straight into edit mode by appending `#livecraft-edit` to any post URL.
 
 == Frequently Asked Questions ==
 
 = Who can edit content with this plugin? =
 
-Any user who already has permission to edit the post or page in the WordPress admin. WP Livecraft uses WordPress's built-in capability checks. It does not grant new permissions.
+Any user who already has permission to edit the post or page in the WordPress admin. Livecraft uses WordPress's built-in capability checks. It does not grant new permissions.
 
 = Does it work with my theme? =
 
@@ -52,7 +52,7 @@ Yes. The editor inherits your theme's frontend styles, so what you edit matches 
 
 = Does it work with custom blocks and plugins like WooCommerce? =
 
-Yes. Anything registered with the WordPress block editor is available in WP Livecraft.
+Yes. Anything registered with the WordPress block editor is available in Livecraft.
 
 = What WordPress and PHP versions are required? =
 
@@ -60,7 +60,7 @@ WordPress 6.4 or newer and PHP 7.4 or newer.
 
 = Where do I report issues or request features? =
 
-Open an issue at https://github.com/tpaksu/wp-livecraft/issues.
+Open an issue at https://github.com/tpaksu/livecraft/issues.
 
 == Screenshots ==
 
@@ -70,8 +70,11 @@ Open an issue at https://github.com/tpaksu/wp-livecraft/issues.
 
 == Changelog ==
 
+= 0.1.2 =
+* Rename plugin from "WP Livecraft" to "Livecraft" (slug, text domain, identifiers) to comply with WordPress.org trademark rules.
+
 = 0.1.1 =
-* Rename internal class to `WP_Livecraft` and convert to instance-based.
+* Rename internal class to `Livecraft` and convert to instance-based.
 * Ship build output in the repository so the plugin runs from a clone without an install step.
 
 = 0.1.0 =
@@ -79,5 +82,5 @@ Open an issue at https://github.com/tpaksu/wp-livecraft/issues.
 
 == Upgrade Notice ==
 
-= 0.1.1 =
-Internal refactor and bundled build output. No breaking changes.
+= 0.1.2 =
+Plugin renamed from "WP Livecraft" to "Livecraft". Slug, text domain, and CSS class names changed. Deactivate and reactivate after upgrade.

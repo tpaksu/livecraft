@@ -18,13 +18,13 @@ function SaveIndicator( { status } ) {
 	}
 
 	const labels = {
-		unsaved: __( 'Unsaved changes', 'wp-livecraft' ),
-		saving: __( 'Saving…', 'wp-livecraft' ),
-		saved: __( 'Saved', 'wp-livecraft' ),
-		error: __( 'Save failed', 'wp-livecraft' ),
+		unsaved: __( 'Unsaved changes', 'livecraft' ),
+		saving: __( 'Saving…', 'livecraft' ),
+		saved: __( 'Saved', 'livecraft' ),
+		error: __( 'Save failed', 'livecraft' ),
 	};
 
-	const className = `wp-livecraft-save-indicator wp-livecraft-save-indicator--${ status }`;
+	const className = `livecraft-save-indicator livecraft-save-indicator--${ status }`;
 
 	return <span className={ className }>{ labels[ status ] || '' }</span>;
 }
@@ -32,23 +32,23 @@ function SaveIndicator( { status } ) {
 function NewContentDropdown( { busy, wrapAction, onNewContent } ) {
 	return (
 		<Dropdown
-			className="wp-livecraft-toolbar__new-dropdown"
-			contentClassName="wp-livecraft-toolbar__new-menu"
+			className="livecraft-toolbar__new-dropdown"
+			contentClassName="livecraft-toolbar__new-menu"
 			popoverProps={ { placement: 'top-end' } }
 			renderToggle={ ( { isOpen, onToggle } ) => (
 				<Button
-					className="wp-livecraft-toolbar__new"
+					className="livecraft-toolbar__new"
 					icon={ plus }
 					onClick={ onToggle }
 					aria-expanded={ isOpen }
 					disabled={ busy }
 					variant="secondary"
 				>
-					{ __( 'Create New', 'wp-livecraft' ) }
+					{ __( 'Create New', 'livecraft' ) }
 				</Button>
 			) }
 			renderContent={ ( { onClose: closeMenu } ) => (
-				<MenuGroup className="wp-livecraft-toolbar__new-menu-group">
+				<MenuGroup className="livecraft-toolbar__new-menu-group">
 					<MenuItem
 						icon={ post }
 						disabled={ busy }
@@ -57,7 +57,7 @@ function NewContentDropdown( { busy, wrapAction, onNewContent } ) {
 							wrapAction( () => onNewContent( 'post' ) )();
 						} }
 					>
-						{ __( 'New Post', 'wp-livecraft' ) }
+						{ __( 'New Post', 'livecraft' ) }
 					</MenuItem>
 					<MenuItem
 						icon={ page }
@@ -67,7 +67,7 @@ function NewContentDropdown( { busy, wrapAction, onNewContent } ) {
 							wrapAction( () => onNewContent( 'page' ) )();
 						} }
 					>
-						{ __( 'New Page', 'wp-livecraft' ) }
+						{ __( 'New Page', 'livecraft' ) }
 					</MenuItem>
 				</MenuGroup>
 			) }
@@ -101,18 +101,18 @@ export default function Toolbar( {
 		}
 	};
 
-	const postType = window.wpLivecraft?.postType || 'post';
+	const postType = window.livecraft?.postType || 'post';
 	const editLabel =
 		postType === 'page'
-			? __( 'Edit Page', 'wp-livecraft' )
-			: __( 'Edit Post', 'wp-livecraft' );
+			? __( 'Edit Page', 'livecraft' )
+			: __( 'Edit Post', 'livecraft' );
 
 	// Not in edit mode: show edit button and new content dropdown.
 	if ( ! editMode ) {
 		return (
-			<div className="wp-livecraft-toolbar wp-livecraft-toolbar--idle">
+			<div className="livecraft-toolbar livecraft-toolbar--idle">
 				<Button
-					className="wp-livecraft-toolbar__toggle"
+					className="livecraft-toolbar__toggle"
 					icon={ pencil }
 					onClick={ onToggleEditMode }
 					variant="secondary"
@@ -132,21 +132,21 @@ export default function Toolbar( {
 	const isPublished = postStatus === 'publish';
 
 	return (
-		<div className="wp-livecraft-toolbar wp-livecraft-toolbar--editing">
+		<div className="livecraft-toolbar livecraft-toolbar--editing">
 			<SaveIndicator status={ saveStatus } />
 
 			<Button
-				className="wp-livecraft-toolbar__undo"
+				className="livecraft-toolbar__undo"
 				icon={ undo }
-				label={ __( 'Undo', 'wp-livecraft' ) }
+				label={ __( 'Undo', 'livecraft' ) }
 				onClick={ onUndo }
 				disabled={ ! hasUndo }
 				variant="tertiary"
 			/>
 			<Button
-				className="wp-livecraft-toolbar__redo"
+				className="livecraft-toolbar__redo"
 				icon={ redo }
-				label={ __( 'Redo', 'wp-livecraft' ) }
+				label={ __( 'Redo', 'livecraft' ) }
 				onClick={ onRedo }
 				disabled={ ! hasRedo }
 				variant="tertiary"
@@ -154,46 +154,46 @@ export default function Toolbar( {
 
 			{ /* Save / Update button */ }
 			<Button
-				className="wp-livecraft-toolbar__save"
+				className="livecraft-toolbar__save"
 				icon={ cloud }
 				onClick={ wrapAction( onSave ) }
 				disabled={ busy || saveStatus === 'saving' }
 				variant="secondary"
 			>
 				{ isPublished
-					? __( 'Update', 'wp-livecraft' )
-					: __( 'Save Draft', 'wp-livecraft' ) }
+					? __( 'Update', 'livecraft' )
+					: __( 'Save Draft', 'livecraft' ) }
 			</Button>
 
 			{ /* Publish button (only for drafts/pending) */ }
 			{ ! isPublished && (
 				<Button
-					className="wp-livecraft-toolbar__publish"
+					className="livecraft-toolbar__publish"
 					onClick={ wrapAction( onPublish ) }
 					disabled={ busy }
 					variant="primary"
 				>
-					{ __( 'Publish', 'wp-livecraft' ) }
+					{ __( 'Publish', 'livecraft' ) }
 				</Button>
 			) }
 
 			{ /* Switch to draft (only for published posts) */ }
 			{ isPublished && (
 				<Button
-					className="wp-livecraft-toolbar__draft"
+					className="livecraft-toolbar__draft"
 					onClick={ wrapAction( onSaveDraft ) }
 					disabled={ busy }
 					variant="secondary"
 				>
-					{ __( 'Switch to Draft', 'wp-livecraft' ) }
+					{ __( 'Switch to Draft', 'livecraft' ) }
 				</Button>
 			) }
 
 			{ /* Exit edit mode */ }
 			<Button
-				className="wp-livecraft-toolbar__exit"
+				className="livecraft-toolbar__exit"
 				icon={ close }
-				label={ __( 'Exit editor', 'wp-livecraft' ) }
+				label={ __( 'Exit editor', 'livecraft' ) }
 				onClick={ wrapAction( onExit ) }
 				disabled={ busy }
 				variant="tertiary"

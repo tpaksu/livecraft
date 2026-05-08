@@ -1,4 +1,4 @@
-# WP Livecraft
+# Livecraft
 
 Edit your WordPress site the way you actually see it. Click on any text, image, or block right on the page, change it, and it saves. No admin screens, no back-and-forth.
 
@@ -8,7 +8,7 @@ Edit your WordPress site the way you actually see it. Click on any text, image, 
 
 You know the loop: spot a typo on your site, click "Edit Post" in the admin bar, wait for the admin editor to load, find the paragraph, fix the typo, hit update, go back to the frontend to check. For one word.
 
-WP Livecraft puts the block editor right on your page. You see your content exactly as visitors do, and you edit it right there. Same blocks, same toolbar, same WordPress you already know. Just in the right place.
+Livecraft puts the block editor right on your page. You see your content exactly as visitors do, and you edit it right there. Same blocks, same toolbar, same WordPress you already know. Just in the right place.
 
 ## Highlights
 
@@ -26,8 +26,8 @@ WP Livecraft puts the block editor right on your page. You see your content exac
 1. Clone into your `wp-content/plugins` directory:
 
    ```bash
-   git clone https://github.com/tpaksu/wp-livecraft.git
-   cd wp-livecraft
+   git clone https://github.com/tpaksu/livecraft.git
+   cd livecraft
    npm install && npm run build
    ```
 
@@ -35,7 +35,7 @@ WP Livecraft puts the block editor right on your page. You see your content exac
 
 3. Visit any post or page on your site while logged in. You'll see a toolbar at the bottom right. Click **Edit Post** (or **Edit Page**) and start editing.
 
-You can also jump straight into edit mode by adding `#wp-livecraft-edit` to any post URL.
+You can also jump straight into edit mode by adding `#livecraft-edit` to any post URL.
 
 ## Requirements
 

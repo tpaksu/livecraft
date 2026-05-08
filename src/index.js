@@ -7,7 +7,7 @@ import './styles/editor.scss';
 domReady( () => {
 	registerCoreBlocks();
 
-	const root = document.getElementById( 'wp-livecraft-root' );
+	const root = document.getElementById( 'livecraft-root' );
 	if ( root ) {
 		createRoot( root ).render( <App /> );
 	}

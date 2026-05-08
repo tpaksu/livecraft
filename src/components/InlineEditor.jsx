@@ -22,9 +22,9 @@ import { fetchPost } from '../utils/api';
 const SAVE_DEBOUNCE_MS = 1500;
 
 function loadEditorStyles() {
-	const urls = window.wpLivecraft?.editorStyles || {};
+	const urls = window.livecraft?.editorStyles || {};
 	Object.entries( urls ).forEach( ( [ handle, url ] ) => {
-		const id = `wp-livecraft-dynamic-style-${ handle }`;
+		const id = `livecraft-dynamic-style-${ handle }`;
 		if ( ! document.getElementById( id ) ) {
 			const link = document.createElement( 'link' );
 			link.id = id;
@@ -37,7 +37,7 @@ function loadEditorStyles() {
 
 function removeEditorStyles() {
 	document
-		.querySelectorAll( '[id^="wp-livecraft-dynamic-style-"]' )
+		.querySelectorAll( '[id^="livecraft-dynamic-style-"]' )
 		.forEach( ( el ) => el.remove() );
 }
 
@@ -61,7 +61,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 	// Unlike dirtyRef, this is NOT cleared by auto-save.
 	const sessionDirtyRef = useRef( false );
 	const postStatusRef = useRef( 'publish' );
-	const { postId, postType } = window.wpLivecraft;
+	const { postId, postType } = window.livecraft;
 
 	// Undo/redo history stack.
 	const historyRef = useRef( [] );
@@ -262,7 +262,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 	// On mount: set up title and editor container.
 	useEffect( () => {
-		const contentEl = document.getElementById( 'wp-livecraft-content' );
+		const contentEl = document.getElementById( 'livecraft-content' );
 		if ( ! contentEl ) {
 			setError( 'Content area not found.' );
 			return;
@@ -270,11 +270,11 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 		loadEditorStyles();
 
-		const titleEl = document.getElementById( 'wp-livecraft-title' );
+		const titleEl = document.getElementById( 'livecraft-title' );
 		if ( titleEl ) {
 			titleElRef.current = titleEl;
 			titleEl.contentEditable = 'true';
-			titleEl.classList.add( 'wp-livecraft-editable-title' );
+			titleEl.classList.add( 'livecraft-editable-title' );
 			titleEl.addEventListener( 'input', () => {
 				dirtyRef.current = true;
 				sessionDirtyRef.current = true;
@@ -293,15 +293,15 @@ const InlineEditor = forwardRef( function InlineEditor(
 		// Mark existing children so we can remove them after the
 		// editor is ready, avoiding a flash of empty content.
 		Array.from( contentEl.children ).forEach( ( child ) => {
-			child.setAttribute( 'data-wp-livecraft-original', '' );
+			child.setAttribute( 'data-livecraft-original', '' );
 		} );
 
 		const editorDiv = document.createElement( 'div' );
-		editorDiv.id = 'wp-livecraft-inline-editor';
+		editorDiv.id = 'livecraft-inline-editor';
 		contentEl.appendChild( editorDiv );
 		editorContainerRef.current = editorDiv;
 
-		document.body.classList.add( 'wp-livecraft-editing' );
+		document.body.classList.add( 'livecraft-editing' );
 
 		fetchPost( postType, postId )
 			.then( ( post ) => {
@@ -314,7 +314,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 
 				// Remove original content now that the editor is ready.
 				contentEl
-					.querySelectorAll( '[data-wp-livecraft-original]' )
+					.querySelectorAll( '[data-livecraft-original]' )
 					.forEach( ( el ) => el.remove() );
 
 				// Restore scroll position after the editor swap.
@@ -325,11 +325,11 @@ const InlineEditor = forwardRef( function InlineEditor(
 			} );
 
 		return () => {
-			document.body.classList.remove( 'wp-livecraft-editing' );
+			document.body.classList.remove( 'livecraft-editing' );
 			if ( titleElRef.current ) {
 				titleElRef.current.contentEditable = 'false';
 				titleElRef.current.classList.remove(
-					'wp-livecraft-editable-title'
+					'livecraft-editable-title'
 				);
 			}
 			removeEditorStyles();
@@ -367,7 +367,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 	);
 
 	if ( error ) {
-		return <div className="wp-livecraft-inline-error">{ error }</div>;
+		return <div className="livecraft-inline-error">{ error }</div>;
 	}
 
 	if ( ! ready || ! blocks || ! editorContainerRef.current ) {
@@ -385,7 +385,7 @@ const InlineEditor = forwardRef( function InlineEditor(
 					hasFixedToolbar: false,
 					focusMode: false,
 					hasInlineToolbar: false,
-					styles: window.wpLivecraft?.themeStyles || [],
+					styles: window.livecraft?.themeStyles || [],
 					mediaUpload( {
 						allowedTypes,
 						additionalData,
