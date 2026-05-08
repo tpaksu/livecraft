@@ -12,7 +12,8 @@
 		"lint:css:fix": "wp-scripts lint-style 'src/**/*.scss' --fix",
 		"lint:php": "composer phpcs",
 		"lint:php:fix": "composer phpcbf",
-		"lint": "npm run lint:js && npm run lint:css && npm run lint:php"
+		"lint": "npm run lint:js && npm run lint:css && npm run lint:php",
+		"release": "git archive --format=zip --prefix=livecraft/ -o livecraft.zip HEAD"
 	},
 	"devDependencies": {
 		"@wordpress/icons": "^12.2.0",
