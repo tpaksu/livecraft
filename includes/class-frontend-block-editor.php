@@ -143,7 +143,7 @@ class Frontend_Block_Editor {
 
 		wp_add_inline_script(
 			'fbedit-editor',
-			'var frontend-block-editor = ' . wp_json_encode(
+			'var fbedit = ' . wp_json_encode(
 				array(
 					'postId'       => get_the_ID(),
 					'postType'     => get_post_type(),
