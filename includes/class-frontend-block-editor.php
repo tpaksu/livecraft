@@ -4,7 +4,7 @@
  *
  * Handles asset enqueueing and content area wrapping for inline editing.
  *
- * @package Frontend_Block_Editor
+ * @package Fbedit_Plugin
  */
 
 defined( 'ABSPATH' ) || exit;
@@ -14,7 +14,7 @@ defined( 'ABSPATH' ) || exit;
  *
  * Registers hooks for frontend inline editing.
  */
-class Frontend_Block_Editor {
+class Fbedit_Plugin {
 
 	/**
 	 * Whether the current request should be instrumented.
@@ -120,11 +120,13 @@ class Frontend_Block_Editor {
 		}
 
 		// Set up wp-api-fetch nonce and root URL on the frontend.
+		// wp_json_encode produces a properly quoted JS string literal, which is
+		// the WordPress-recommended way to escape a value into inline JavaScript.
 		wp_add_inline_script(
 			'wp-api-fetch',
 			sprintf(
-				'wp.apiFetch.use( wp.apiFetch.createNonceMiddleware( "%s" ) );',
-				wp_create_nonce( 'wp_rest' )
+				'wp.apiFetch.use( wp.apiFetch.createNonceMiddleware( %s ) );',
+				wp_json_encode( wp_create_nonce( 'wp_rest' ) )
 			),
 			'after'
 		);
@@ -132,8 +134,8 @@ class Frontend_Block_Editor {
 		wp_add_inline_script(
 			'wp-api-fetch',
 			sprintf(
-				'wp.apiFetch.use( wp.apiFetch.createRootURLMiddleware( "%s" ) );',
-				esc_url_raw( rest_url() )
+				'wp.apiFetch.use( wp.apiFetch.createRootURLMiddleware( %s ) );',
+				wp_json_encode( esc_url( rest_url() ) )
 			),
 			'after'
 		);
@@ -222,7 +224,7 @@ class Frontend_Block_Editor {
 		return sprintf(
 			'<span id="fbedit-title" data-fbedit-post="%d">%s</span>',
 			intval( $post_id ),
-			$title
+			wp_kses_post( $title )
 		);
 	}
 
@@ -244,7 +246,7 @@ class Frontend_Block_Editor {
 			'<div id="fbedit-content" data-fbedit-post="%d" data-fbedit-post-type="%s">%s</div>',
 			intval( $post_id ),
 			esc_attr( $post_type ),
-			$content
+			wp_kses_post( $content )
 		);
 	}
 

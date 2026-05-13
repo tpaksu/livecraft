@@ -4,7 +4,7 @@ Tags: editor, frontend editor, block editor, gutenberg, inline editing
 Requires at least: 6.4
 Tested up to: 6.9
 Requires PHP: 7.4
-Stable tag: 0.1.4
+Stable tag: 0.1.5
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -70,6 +70,11 @@ Open an issue at https://github.com/tpaksu/frontend-block-editor/issues.
 
 == Changelog ==
 
+= 0.1.5 =
+* Escape post title and content output in `the_title` and `the_content` filter callbacks via `wp_kses_post()` to satisfy WordPress.org output-escaping review feedback.
+* Escape the REST nonce and root URL injected into inline JavaScript via `wp_json_encode()` instead of relying on `esc_url_raw()` (which is a sanitizer, not an output escaper).
+* Rename main plugin class from `Frontend_Block_Editor` to `Fbedit_Plugin` so every PHP identifier uses the unique `fbedit` prefix.
+
 = 0.1.4 =
 * Rename plugin to "Frontend Block Editor" (slug `frontend-block-editor`, text domain `frontend-block-editor`, PHP class `Frontend_Block_Editor`, internal prefix `fbedit`). The previous name was declined at WordPress.org review as a possible brand conflict; the new name is descriptive of what the plugin does.
 
@@ -84,6 +89,9 @@ Open an issue at https://github.com/tpaksu/frontend-block-editor/issues.
 * Initial release: frontend block editing, autosave, publish and unpublish guardrails, frontend post/page creation, undo/redo, admin bar styling.
 
 == Upgrade Notice ==
+
+= 0.1.5 =
+Security and WordPress.org compliance fixes: output escaping in `the_title` and `the_content` callbacks, JSON-encoded inline JS payloads, and a renamed main class (`Fbedit_Plugin`). No user-visible behaviour changes.
 
 = 0.1.4 =
 Plugin renamed to "Frontend Block Editor". Slug, text domain, and the old `livecraft-*` selectors became `frontend-block-editor` / `fbedit-*`. Update any custom CSS or JS targeting the old prefixes, then deactivate and reactivate.

@@ -39,7 +39,7 @@
 			<property name="prefixes" type="array">
 				<element value="fbedit"/>
 				<element value="FBEDIT"/>
-				<element value="Frontend_Block_Editor"/>
+				<element value="Fbedit_Plugin"/>
 			</property>
 		</properties>
 	</rule>
